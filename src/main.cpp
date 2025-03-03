@@ -5,8 +5,8 @@
 const char *ssid = "wifi@lsong.org";
 const char *password = "song940@163.com";
 const char *mqttServer = "broker.emqx.io";
-const char *clientID = "esp8266-relay";
-const char *relayTopic = "esp8266-relay";
+const char *clientID = "yim-door";
+const char *relayTopic = "yim-door";
 
 const int RY1 = 0;
 const int LED1 = LED_BUILTIN;
@@ -33,9 +33,18 @@ void reconnect()
   }
 }
 
+void relay1on()
+{
+  digitalWrite(RY1, LOW);
+}
+
+void relay1off()
+{
+  digitalWrite(RY1, HIGH);
+}
+
 void onMessage(char *topic, byte *payload, unsigned int length)
 {
-  // Handle received messages
   String payloadStr = "";
   for (unsigned int i = 0; i < length; i++)
   {
@@ -45,21 +54,12 @@ void onMessage(char *topic, byte *payload, unsigned int length)
 
   if (strcmp(topic, relayTopic) == 0)
   {
-    if (payloadStr == "relay1on")
+
+    if (payloadStr == "click")
     {
-      digitalWrite(RY1, LOW);
-    }
-    else if (payloadStr == "relay1off")
-    {
-      digitalWrite(RY1, HIGH);
-    }
-    else if (payloadStr == "led1on")
-    {
-      digitalWrite(LED1, LOW);
-    }
-    else if (payloadStr == "led1off")
-    {
-      digitalWrite(LED1, HIGH);
+      relay1on();
+      delay(1000);
+      relay1off();
     }
     else if (payloadStr == "ping")
     {

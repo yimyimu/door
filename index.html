@@ -1,0 +1,30 @@
+<meta name="viewport" content="width=device-width" />
+<title>🔒 Yim Door</title> 
+
+<style>
+#btn{
+  width: 100%;
+  height: 50vh;
+  font-size: 3em;
+  appearance: none;
+}
+</style>
+
+<h1>🚪 Yim Door</h1>
+<button id="btn" disabled >loading...</button>
+
+<script type="module" >
+import mqtt from 'https://esm.sh/mqtt';
+
+const client = mqtt.connect("wss://broker.emqx.io:8084/mqtt");
+
+client.on('connect', () => {
+    btn.textContent = "开门"
+    btn.disabled = false
+});
+
+btn.addEventListener("click", () => {
+    client.publish("yim-door", "click");
+});
+</script>
+</html>

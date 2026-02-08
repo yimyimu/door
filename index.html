@@ -29,20 +29,17 @@
   const TOPIC = "yim-door";
 
   const client = mqtt.connect("wss://broker-cn.emqx.io:8084/mqtt");
+  
+  var t = setTimeout(() => {
+    btn.textContent = "timeout, pls retry.";
+    btn.disabled = true;
+  }, 1000 * 30);
 
-  var t;
   client.on('connect', () => {
-    btn.textContent = "Connected"
+    btn.textContent = "Connected";
     client.subscribe(TOPIC);
-    sendPing();
-    t = setTimeout(() => {
-      btn.textContent = "timeout, pls retry."
-    }, 1000 * 10);
-  });
-
-  function sendPing() {
     client.publish(TOPIC, "ping");
-  }
+  });
 
   client.on("message", (topic, payload, sender) => {
     const message = payload.toString();
@@ -50,7 +47,7 @@
       clearTimeout(t);
       btn.disabled = false;
       btn.textContent = "Open the door!";
-    } 
+    }
   });
 
   btn.addEventListener("click", () => {

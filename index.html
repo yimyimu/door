@@ -30,11 +30,12 @@
 
   const client = mqtt.connect("wss://broker-cn.emqx.io:8084/mqtt");
 
+  var t;
   client.on('connect', () => {
     btn.textContent = "Connected"
     client.subscribe(TOPIC);
     sendPing();
-    setTimeout(() => {
+    t = setTimeout(() => {
       btn.textContent = "timeout, pls retry."
     }, 1000 * 10);
   });
@@ -46,6 +47,7 @@
   client.on("message", (topic, payload, sender) => {
     const message = payload.toString();
     if(message == "pong") {
+      clearTimeout(t);
       btn.disabled = false;
       btn.textContent = "Open the door!";
     } 

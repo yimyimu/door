@@ -4,7 +4,7 @@
 
 const char *ssid = "wifi@lsong.org";
 const char *password = "song940@163.com";
-const char *mqttServer = "broker.emqx.io";
+const char *mqttServer = "broker-cn.emqx.io";
 const char *clientID = "yim-door";
 const char *relayTopic = "yim-door";
 

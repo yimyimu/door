@@ -18,7 +18,7 @@
 <body>
 
   <h1>🚪 Yim Door</h1>
-  <button id="btn" disabled>loading...</button>
+  <button id="btn" disabled>Loading...</button>
 
 
 </body>
@@ -26,15 +26,33 @@
 <script type="module">
   import mqtt from 'https://esm.sh/mqtt';
 
-  const client = mqtt.connect("wss://broker.emqx.io:8084/mqtt");
+  const TOPIC = "yim-door";
+
+  const client = mqtt.connect("wss://broker-cn.emqx.io:8084/mqtt");
 
   client.on('connect', () => {
-    btn.textContent = "开门"
-    btn.disabled = false
+    btn.textContent = "Connected"
+    client.subscribe(TOPIC);
+    sendPing();
+    setTimeout(() => {
+      btn.textContent = "timeout, pls retry."
+    }, 1000 * 10);
+  });
+
+  function sendPing() {
+    client.publish(TOPIC, "ping");
+  }
+
+  client.on("message", (topic, payload, sender) => {
+    const message = payload.toString();
+    if(message == "pong") {
+      btn.disabled = false;
+      btn.textContent = "Open the door!";
+    } 
   });
 
   btn.addEventListener("click", () => {
-    client.publish("yim-door", "click");
+    client.publish(TOPIC, "click");
   });
 </script>
 
